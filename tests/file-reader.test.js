@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{SUPPORTED_EXTENSIONS,validateFile,extractFile}from'../file-reader.js';
+test('requested Office, PDF and image extensions supported with file-size limits',()=>{for(const ext of ['xlsx','xls','docx','pptx','pdf','jpg','png'])assert.equal(validateFile({name:'test.'+ext,size:100}),ext);assert.throws(()=>validateFile({name:'test.exe',size:1}));assert.throws(()=>validateFile({name:'test.pdf',size:21*1024*1024}));assert.equal(SUPPORTED_EXTENSIONS.includes('doc'),false);});
+test('plain text path preserves content',async()=>{const r=await extractFile({name:'test.txt',size:8,text:async()=>'اسم الموضوع: اختبار'});assert.equal(r.format,'txt');assert.equal(r.text,'اسم الموضوع: اختبار');});
