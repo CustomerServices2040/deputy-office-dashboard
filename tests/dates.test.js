@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {workDays,dueDate,isLate} from '../dates.js';
+test('arrival day and Friday/Saturday excluded',()=>{assert.equal(workDays('2026-11-05','2026-11-07'),0);assert.equal(workDays('2026-11-05','2026-11-08'),1);assert.equal(workDays('2026-11-08','2026-11-08'),0);});
+test('late only after exceeding 14 business days',()=>{const r={kind:'mersal',status:'open',received:'2026-10-18'};assert.equal(dueDate(r.received),'2026-11-05');assert.equal(isLate(r,'2026-11-07'),false);assert.equal(isLate(r,'2026-11-08'),true);assert.equal(isLate({...r,status:'completed'},'2026-11-08'),false);assert.equal(isLate({...r,kind:'email'},'2026-11-08'),false);});
+test('weekend arrival and year boundary',()=>{assert.equal(dueDate('2026-11-06'),'2026-11-25');assert.equal(workDays('2026-12-31','2027-01-03'),1);assert.equal(dueDate(''),'');});

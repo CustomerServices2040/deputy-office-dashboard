@@ -1,0 +1,4 @@
+export function todayOman(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Muscat',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+export function workDays(start,end=todayOman()){if(!start||end<=start)return 0;const date=new Date(start+'T00:00:00Z'),last=new Date(end+'T00:00:00Z');if(!Number.isFinite(+date)||!Number.isFinite(+last))return 0;let n=0;while(date<last){date.setUTCDate(date.getUTCDate()+1);if(![5,6].includes(date.getUTCDay()))n++;}return n;}
+export function dueDate(start){if(!start)return '';const date=new Date(start+'T00:00:00Z');if(!Number.isFinite(+date))return '';let n=0;while(n<14){date.setUTCDate(date.getUTCDate()+1);if(![5,6].includes(date.getUTCDay()))n++;}return date.toISOString().slice(0,10);}
+export function isLate(row,today=todayOman()){return row.kind==='mersal'&&row.status!=='completed'&&workDays(row.received,today)>14;}
