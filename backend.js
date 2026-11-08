@@ -16,7 +16,7 @@ export async function currentUser(){return key&&name?name:null;}
 export async function signOut(){key=null;name='';token='';editing=false;}
 export function canEdit(){return editing&&Boolean(token)&&Boolean(key);}
 export function lockEditing(){token='';editing=false;}
-export async function unlockEditing(password,accessToken,displayName){if(!key)throw Error('سجّل الدخول أولًا.');if(!accessToken.trim())throw Error('أدخل رمز GitHub المقيّد بالمستودع.');const doc=await read();const candidate=await deriveKey(password,doc.envelope.salt);try{await decryptDocument(doc.envelope,candidate);}catch{throw Error('كلمة مرور التعديل غير صحيحة.');}
+export async function unlockEditing(accessToken,displayName){if(!key)throw Error('سجّل الدخول أولًا.');if(!accessToken.trim())throw Error('أدخل رمز GitHub المقيّد بالمستودع.');
  const response=await fetch('https://api.github.com/repos/'+REPO,{headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+accessToken.trim()}});if(!response.ok)throw Error('رمز GitHub غير صالح أو لا يتيح الوصول إلى المستودع.');const repo=await response.json();if(repo.full_name.toLowerCase()!==REPO.toLowerCase()||!repo.permissions?.push)throw Error('يلزم رمز كتابة لمستودع deputy-office-dashboard فقط.');if(!displayName?.trim())throw Error('أدخل اسم الموظف المحرّر.');name=displayName.trim();token=accessToken.trim();editing=true;
 }
 export async function listTopics(){if(!key)throw Error('يلزم تسجيل الدخول.');const doc=await read();return (await decryptDocument(doc.envelope,key)).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt));}
